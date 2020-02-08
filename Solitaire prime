@@ -1,0 +1,93 @@
+// -------------------main.cpp---------------------
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+//#include "Card.hpp"
+
+using namespace std;
+
+int main()
+{
+    int choice = 0;
+    cout << "Welcome to Solitaire Prime!\n";
+    cout << "1) New Deck\n";
+    cout << "2) Display Deck\n";
+    cout << "3) Shuffle Deck\n";
+    cout << "4) Play Soitaire Prime\n";
+    cout << "5) Exit\n";
+    cin >> choice;
+    if(choice == 1)
+    {
+        
+    }
+    else if(choice == 2)
+    {
+        
+    }
+    else if(choice == 3)
+    {
+        
+    }
+    else if(choice == 4)
+    {
+        
+    }
+    else if(choice == 5)
+    {
+        exit(0);
+    }
+}
+// -------------------Card.cpp---------------------
+#include "Card.hpp"
+Card::Card(char r, char s )
+{
+    rank = r;
+    suit = s;
+}
+// -------------------Card.hpp---------------------
+
+#ifndef Card_hpp
+#define Card_hpp
+class Card
+{
+private:
+    char rank;
+    char suit;
+public:
+    Card(char, char);
+    Card();
+    int getValue();
+    void display();
+};
+// -------------------Deck.cpp---------------------
+#endif /* Card_hpp */
+/*
+#include "Deck.hpp"
+#include "Card.hpp"
+Deck::Deck()
+{
+    //Top = 0;
+}
+*/
+// -------------------Deck.hpp---------------------
+/*
+#ifndef Deck_hpp
+#define Deck_hpp
+#include "Card.hpp"
+class Deck
+{
+private:
+    Card storage[52];
+public:
+    Deck();
+    int cardsLeft();
+    void shuffle();
+    Card deal();
+    void display();
+    void refreshDeck();
+    void showDeck();
+
+};
+
+#endif /* Deck_hpp */
+*/
