@@ -1,50 +1,184 @@
 // -------------------main.cpp---------------------
+#// Curtis Nishihira
+// CECS 282-05
+// Prog 1 - Blackjack
+// 02/11/2020
+
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-//#include "Card.hpp"
+#include "Card.hpp"
+#include "Deck.hpp"
 
 using namespace std;
+// Initalized a global deck object to be used for all functions
+Deck mainDeck;
 
-int main()
+// Function for determining if a number is prime, used in run function.
+// Takes an int as parameter and returns a boolean.
+bool isPrime(int num)
+{
+    if (num < 2)
+    {
+        return false;
+    }
+    for(int i = 2; i < num;i++)
+    {
+        if(num % i == 0)
+            return false;
+    }
+    return true;
+}
+
+// Function for running the actual game prints the values of the cards as well as
+// whether the win or lose condition was met.
+// Takes no parameter and returns nothing.
+void run()
+{
+    int sum = 0;
+    int pile = 0;
+    bool winner = false;
+    for(int i = 0; i<52;i++)
+    {
+        Card temp = mainDeck.deal();
+        sum = sum + temp.getValue();
+        if(isPrime(sum))
+        {
+            pile++;
+            cout << "Prime: " << sum << "\n";
+            sum = 0;
+            if(mainDeck.cardsLeft()==0)
+            {
+                cout << "\n";
+                cout << "Winner in " << pile << " piles.\n";
+                cout << "\n";
+                mainDeck.topReset();
+                winner = true;
+            }
+        }
+        
+        if(mainDeck.cardsLeft()==0 && !winner)
+        {
+            cout << "Loser\n";
+            cout << "\n";
+            mainDeck.topReset();
+        }
+    }
+}
+
+// Function for directing based on menu option chosen.
+// Takes int as parameter and returns nothing.
+void option(int num)
+{
+    if(num == 1)
+    {
+        cout << "New Deck created.\n";
+        mainDeck.refreshDeck();
+    }
+    else if(num == 2)
+    {
+        mainDeck.showDeck();
+    }
+    else if(num == 3)
+    {
+        cout << "Deck shuffled.\n";
+        mainDeck.shuffle();
+    }
+    else if(num == 4)
+    {
+        cout << "Playing Solitaire Prime.\n";
+        run();
+    }
+}
+
+// Function for displaying the menu and taking in user input choice.
+// Takes no parameter and returns an in value.
+int menu()
 {
     int choice = 0;
-    cout << "Welcome to Solitaire Prime!\n";
     cout << "1) New Deck\n";
     cout << "2) Display Deck\n";
     cout << "3) Shuffle Deck\n";
     cout << "4) Play Soitaire Prime\n";
     cout << "5) Exit\n";
     cin >> choice;
-    if(choice == 1)
+    return choice;
+}
+
+// main function for calling all other functions and ouputing to console
+// takes no parameter and returns nothing
+int main()
+{
+    int choice = 0;
+    bool gameOn = true;
+    cout << "Welcome to Solitaire Prime!\n";
+    while(gameOn)
     {
-        
-    }
-    else if(choice == 2)
-    {
-        
-    }
-    else if(choice == 3)
-    {
-        
-    }
-    else if(choice == 4)
-    {
-        
-    }
-    else if(choice == 5)
-    {
-        exit(0);
+        choice = menu();
+        if(choice == 5){break;}
+        else{option(choice);}
     }
 }
+
 // -------------------Card.cpp---------------------
+// Curtis Nishihira
+// CECS 282-05
+// Prog 1 - Blackjack
+// 02/11/2020
+
 #include "Card.hpp"
+#include <iostream>
+using namespace std;
+
+// Card Constructor for empty card.
+// Takes no parameter and returns a Card
+Card::Card(){}
+
+// Card Constructor for inputed Card.
+// Takes two characters for parameters and returns a Card.
 Card::Card(char r, char s )
+{
+    setCard(r,s);
+}
+
+// Function for setting the value of a Card.
+// Takes two characters for parameters and returns a Card.
+void Card::setCard(char r,char s)
 {
     rank = r;
     suit = s;
 }
+
+// Function for displaying the Card Object.
+// Takes no parameters and returns nothing.
+void Card::showCard()
+{
+    cout << rank << suit;
+}
+
+// Function for accessing the value of a Card.
+// Takes no parameters and returns an int value. 
+int Card::getValue()
+{
+    if(rank == 'A'){return 1;}
+    if(rank == '2'){return 2;}
+    if(rank == '3'){return 3;}
+    if(rank == '4'){return 4;}
+    if(rank == '5'){return 5;}
+    if(rank == '6'){return 6;}
+    if(rank == '7'){return 7;}
+    if(rank == '8'){return 8;}
+    if(rank == '9'){return 9;}
+    if(rank == 'T'){return 10;}
+    if(rank == 'J'){return 10;}
+    if(rank == 'Q'){return 10;}
+    if(rank == 'K'){return 10;}
+    else{return 0;}
+}
+
 // -------------------Card.hpp---------------------
+// Curtis Nishihira
+// CECS 282-05
+// Prog 1 - Blackjack
+// 02/11/2020
 
 #ifndef Card_hpp
 #define Card_hpp
@@ -54,40 +188,152 @@ private:
     char rank;
     char suit;
 public:
-    Card(char, char);
     Card();
+    Card(char r, char s);
     int getValue();
-    void display();
+    void showCard();
+    void setCard(char r, char s);
 };
-// -------------------Deck.cpp---------------------
+
 #endif /* Card_hpp */
-/*
+
+// -------------------Deck.cpp---------------------
+// Curtis Nishihira
+// CECS 282-05
+// Prog 1 - Blackjack
+// 02/11/2020
+
 #include "Deck.hpp"
 #include "Card.hpp"
+#include <iostream>
+#include <array>
+
+
+// Initialized two global character arrays to hold the values that would be assigned to cards.
+char suits[] = {'S','H','D','C'};
+char ranks[] = {'A','2','3','4','5','6','7','8','9','T','J','Q','K'};
+
+// Deck constructor that utilizes the character arrays for creating a standard deck of cards.
+// Takes no parameters and returns a Deck.
 Deck::Deck()
 {
-    //Top = 0;
+    top = 0;
+    
+    int counter = 0;
+    for(int i = 0;i<sizeof(suits);i++)
+    {
+        for(int j = 0; j<sizeof(ranks);j++)
+        {
+            storage[counter] = Card(ranks[j],suits[i]);
+            counter++;
+        }
+    }
 }
-*/
+
+// Function for displaying the contents of the Deck.
+// Takes no parameters and returns nothing.
+void Deck::showDeck()
+{
+    for(int i = 0; i<52;i++)
+    {
+        storage[i].showCard();
+        std::cout << " ";
+        if(i==12||i==25||i==38||i==51)
+        {
+            std::cout << "\n";
+        }
+    }
+    std::cout << "\n";
+}
+
+// Function for shuffling the contents of a Deck.
+// Takes no parameter and returns nothing.
+void Deck::shuffle()
+{
+    srand((unsigned int) time(0));
+    for(int i = 0; i<52;i++)
+    {
+        int num = rand() % 52;
+        Card t = storage[num];
+        storage[num] = storage[i];
+        storage[i] = t;
+    }
+}
+
+// Function for reseting a Deck to orignal base Deck.
+// Takes no parameters and returns nothing
+void Deck::refreshDeck()
+{
+    int counter = 0;
+    for(int i = 0;i<sizeof(suits);i++)
+    {
+        for(int j = 0; j<sizeof(ranks);j++)
+        {
+            storage[counter] = Card(ranks[j],suits[i]);
+            counter++;
+        }
+    }
+}
+
+// Function for dealing the top card of a Deck.
+// Takes no parameters and returns nothing.
+Card Deck::deal()
+{
+    Card current;
+    if(top < 52)
+    {
+        current = storage[top];
+        current.showCard();
+        std::cout << ", ";
+        top++;
+        return current;
+    }
+    else
+    {
+        return Card();
+    }
+}
+
+// Function for determining how many cards are left in the deck.
+// Takes no parameter and returns an int value.
+int Deck::cardsLeft()
+{
+    int left = 52 - top;
+    return left;
+}
+
+// Function for reseting the value of the top counter.
+// Takes no parameter and returns nothing.
+void Deck::topReset()
+{
+    top = 0;
+}
+
 // -------------------Deck.hpp---------------------
-/*
+// Curtis Nishihira
+// CECS 282-05
+// Prog 1 - Blackjack
+// 02/11/2020
+
 #ifndef Deck_hpp
 #define Deck_hpp
 #include "Card.hpp"
+#include <iostream>
+
 class Deck
 {
 private:
     Card storage[52];
+    int top;
 public:
     Deck();
     int cardsLeft();
     void shuffle();
     Card deal();
-    void display();
-    void refreshDeck();
     void showDeck();
-
+    void refreshDeck();
+    void topReset();
 };
 
 #endif /* Deck_hpp */
-*/
+
