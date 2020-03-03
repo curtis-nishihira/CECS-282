@@ -1,0 +1,192 @@
+// Curtis Nishihira
+// CECS 282-05
+// Prog 2 - myDate Object
+// 03/03/2020
+#include <iostream>
+#include "myDate.hpp"
+int Greg2Julian(int month, int day, int year)
+{
+    int i = year;
+    int j = month;
+    int k = day;
+    int temp = k - 32075 + 1461 * (i + 4800 + (j - 14)/12)/4+367 * (j-2-(j-14)/12*12)/12-3*((i + 4900 + (j - 14)/12)/100)/4;
+    return temp;
+}
+void Julian2Greg(int JD, int & month, int & day, int & year)
+{
+    int L;
+    int N;
+    int i;
+    int j;
+    int k;
+    L = JD + 68569;
+    N  = 4 * L/146097;
+    L = L - (146097 * N + 3)/4;
+    i = 4000 * (L + 1)/1461001;
+    L = L - 1461 * i/4+31;
+    j = 80 * L/2447;
+    k = L - 2447*j/80;
+    L = j/11;
+    j = j + 2 - 12 * L;
+    i = 100 * (N - 49) + i + L;
+    year = i;
+    month = j;
+    day = k;
+}
+myDate::myDate()
+{
+    month = 5;
+    day = 11;
+    year = 1959;
+}
+myDate::myDate(int m,int d, int y)
+{
+    month = m;
+    day = d;
+    year = y;
+}
+
+int myDate::getMonth()
+{
+    return month;
+}
+int myDate::getDay()
+{
+    return day;
+}
+int myDate::getYear()
+{
+    return year;
+}
+
+void myDate::increaseDate(int N)
+{
+    int temp = Greg2Julian(month,day,year);
+    temp = temp + N;
+    int m;
+    int d;
+    int y;
+    Julian2Greg(temp,m,d,y);
+    month = m;
+    day = d;
+    year = y;
+}
+void myDate::decreaseDate(int N)
+{
+    int temp = Greg2Julian(month,day,year);
+    temp = temp - N;
+    int m;
+    int d;
+    int y;
+    Julian2Greg(temp,m,d,y);
+    month = m;
+    day = d;
+    year = y;
+}
+void myDate::display()
+{
+    std::cout<<month<<" "<<day<<", "<<year;
+}
+
+int myDate::daysBetween(myDate D)
+{
+    int temp1 = Greg2Julian(month,day,year);
+    int temp2 = Greg2Julian(D.getMonth(),D.getDay(),D.getYear());
+    return (temp2 - temp1);
+}
+int myDate::dayOfYear()
+{
+    int temp1 = Greg2Julian(1, 1, year);
+    int temp2 = Greg2Julian(month,day,year);
+    return (temp2 - temp1);
+}
+bool isLeap(int n)
+{
+    if(n%4==0)
+    {
+        if(n%100==0)
+        {
+            if(n%400==0)
+                return true;
+            else return false;
+        }
+        else return true;
+    }
+    else return false;
+}
+std::string myDate::dayName()
+{
+    char days [7][10] = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+    int cent = year/100*100;
+    int code = 0;
+    int rem = (year - cent) % 12;
+    int mod = cent % 400;
+    if(mod == 300){code = 3;}
+    if(mod == 0){code = 2;}
+    if(mod == 100){code = 0;}
+    if(mod == 200){code = 5;}
+    int sum = code + ((year - cent)/12) + rem + (rem/4);
+    if(sum>6){sum = sum%7;}
+    if(month == 1)
+    {
+        if(isLeap(year))
+        {
+            int distance = abs(4 - day);
+            sum = sum + distance;
+        }
+        else
+        {
+            int distance = abs(3 - day);
+            sum = sum + distance;
+        }
+    }
+    if(month == 2)
+    {
+        if(isLeap(year))
+        {
+            int distance = abs(29 - day);
+            sum = sum + distance;
+        }
+        else
+        {
+            int distance = abs(28 - day);
+            sum = sum + distance;
+        }
+    }
+    if(month == 3)
+    {
+        int distance = abs(14 - day);
+        sum = sum + distance;
+    }
+    if(month % 2 == 0)
+    {
+        int distance = abs(month - day);
+        sum = sum + distance;
+    }
+    if(month == 5)
+    {
+        int distance = abs(9 - day);
+        sum = sum + distance;
+    }
+    if(month == 7)
+    {
+        int distance = abs(11 - day);
+        sum = sum + distance;
+    }
+    if(month == 9)
+    {
+        int distance = abs(5 - day);
+        sum = sum + distance;
+    }
+    if(month == 11)
+    {
+        int distance = abs(7 - day);
+        sum = sum + distance;
+    }
+    while(sum>=7)
+    {
+        sum = sum - 7;
+    }
+    
+    return days[sum];
+}
