@@ -128,6 +128,7 @@ std::string myDate::dayName()
     if(mod == 200){code = 5;}
     int sum = code + ((year - cent)/12) + rem + (rem/4);
     if(sum>6){sum = sum%7;}
+    std::cout<<"Doomsday: "<<days[sum]<<"\n";
     if(month == 1)
     {
         if(isLeap(year))
@@ -141,7 +142,7 @@ std::string myDate::dayName()
             sum = sum + distance;
         }
     }
-    if(month == 2)
+    else if(month == 2)
     {
         if(isLeap(year))
         {
@@ -154,32 +155,32 @@ std::string myDate::dayName()
             sum = sum + distance;
         }
     }
-    if(month == 3)
+    else if(month == 3)
     {
         int distance = abs(14 - day);
         sum = sum + distance;
     }
-    if(month % 2 == 0)
+    else if(month % 2 == 0)
     {
         int distance = abs(month - day);
         sum = sum + distance;
     }
-    if(month == 5)
+    else if(month == 5)
     {
         int distance = abs(9 - day);
         sum = sum + distance;
     }
-    if(month == 7)
+    else if(month == 7)
     {
         int distance = abs(11 - day);
         sum = sum + distance;
     }
-    if(month == 9)
+    else if(month == 9)
     {
         int distance = abs(5 - day);
         sum = sum + distance;
     }
-    if(month == 11)
+    else if(month == 11)
     {
         int distance = abs(7 - day);
         sum = sum + distance;
@@ -188,6 +189,6 @@ std::string myDate::dayName()
     {
         sum = sum - 7;
     }
-    
     return days[sum];
 }
+
