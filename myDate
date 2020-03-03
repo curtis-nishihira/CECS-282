@@ -85,7 +85,8 @@ void myDate::decreaseDate(int N)
 }
 void myDate::display()
 {
-    std::cout<<month<<" "<<day<<", "<<year;
+    char monthes [13][10] = {"","January","February","March","April","May","June","July","August","September","October","November","December"};
+    std::cout<<monthes[month]<<" "<<day<<", "<<year;
 }
 
 int myDate::daysBetween(myDate D)
