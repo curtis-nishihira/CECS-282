@@ -41,9 +41,18 @@ myDate::myDate()
 }
 myDate::myDate(int m,int d, int y)
 {
-    month = m;
-    day = d;
-    year = y;
+    if(m>12||d>31)
+    {
+        month = 5;
+        day = 11;
+        year = 1959;
+    }
+    else
+    {
+        month = m;
+        day = d;
+        year = y;
+    }
 }
 
 int myDate::getMonth()
@@ -86,7 +95,8 @@ void myDate::decreaseDate(int N)
 void myDate::display()
 {
     char monthes [13][10] = {"","January","February","March","April","May","June","July","August","September","October","November","December"};
-    std::cout<<monthes[month]<<" "<<day<<", "<<year;
+        std::cout<<monthes[month]<<" "<<day<<", "<<year;
+
 }
 
 int myDate::daysBetween(myDate D)
@@ -132,12 +142,12 @@ std::string myDate::dayName()
     {
         if(isLeap(year))
         {
-            int distance = abs(4 - day);
+            int distance = abs(4 + day);
             sum = sum + distance;
         }
         else
         {
-            int distance = abs(3 - day);
+            int distance = abs(3 + day);
             sum = sum + distance;
         }
     }
