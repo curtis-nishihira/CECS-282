@@ -1,0 +1,209 @@
+// Curtis Nishihira
+// CECS 282-05
+// Prog 4 - upDate Object
+// 04/14/2020
+#include <iostream>
+#include "upDate.hpp"
+int Greg2Julian(int month, int day, int year)
+{
+    int i = year;
+    int j = month;
+    int k = day;
+    int temp = k - 32075 + 1461 * (i + 4800 + (j - 14)/12)/4+367 * (j-2-(j-14)/12*12)/12-3*((i + 4900 + (j - 14)/12)/100)/4;
+    return temp;
+}
+
+void Julian2Greg(int JD, int & month, int & day, int & year)
+{
+    int L;
+    int N;
+    int i;
+    int j;
+    int k;
+    L = JD + 68569;
+    N  = 4 * L/146097;
+    L = L - (146097 * N + 3)/4;
+    i = 4000 * (L + 1)/1461001;
+    L = L - 1461 * i/4+31;
+    j = 80 * L/2447;
+    k = L - 2447*j/80;
+    L = j/11;
+    j = j + 2 - 12 * L;
+    i = 100 * (N - 49) + i + L;
+    year = i;
+    month = j;
+    day = k;
+}
+
+upDate::upDate()
+{
+    month = 5;
+    day = 11;
+    year = 1959;
+}
+
+upDate::upDate(int m,int d, int y)
+{
+    if(m>12||d>31)
+    {
+        month = 5;
+        day = 11;
+        year = 1959;
+    }
+    else
+    {
+        month = m;
+        day = d;
+        year = y;
+    }
+}
+
+upDate::upDate(int j)
+{
+    Julian2Greg(j,month,day,year);
+}
+
+upDate::upDate(const upDate &D)
+{
+    month = D.month;
+    day = D.day;
+    year = D.year;
+}
+upDate::~upDate()
+{
+    std::cout<<"Destructor called";
+}
+std::ostream & operator << (std::ostream &out, const upDate &c)
+{
+    out << std::to_string(c.month) << "/" << std::to_string(c.day) << "/" << std::to_string(c.year);
+    return out;
+}
+int upDate::getMonth()
+{
+    return month;
+}
+
+int upDate::getDay()
+{
+    return day;
+}
+
+int upDate::getYear()
+{
+    return year;
+}
+int upDate::julian()
+{
+    int x = Greg2Julian(month, day, year);
+    return x;
+}
+
+std::string upDate::getMonthName()
+{
+    std::string monthes[12] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+    return monthes[month];
+}
+
+upDate upDate::operator+(int x)
+{
+    int m1, d1, y1;
+    int JD = Greg2Julian(month, day, year);
+    JD += x;
+    Julian2Greg(JD, m1, d1, y1);
+    upDate temp(m1,d1,y1);
+    return temp;
+}
+
+upDate upDate::operator-(int x)
+{
+    int m1, d1, y1;
+    int JD = Greg2Julian(month, day, year);
+    JD -= x;
+    Julian2Greg(JD, m1, d1, y1);
+    upDate temp(m1,d1,y1);
+    return temp;
+}
+
+int upDate::operator-(upDate x)
+{
+    int a = Greg2Julian(month,day,year);
+    int b = Greg2Julian(x.month,x.day,x.year);
+    return a - b;
+}
+
+void upDate::operator=(upDate x)
+{
+    month = x.month;
+    day = x.day;
+    year = x.year;
+}
+
+void upDate::operator+=(int x)
+{
+    int m1, d1, y1;
+    int JD = Greg2Julian(month, day, year);
+    JD += x;
+    Julian2Greg(JD, m1, d1, y1);
+    month = m1;
+    day = d1;
+    year = y1;
+}
+
+void upDate::operator-=(int x)
+{
+    int m1, d1, y1;
+    int JD = Greg2Julian(month, day, year);
+    JD -= x;
+    Julian2Greg(JD, m1, d1, y1);
+    month = m1;
+    day = d1;
+    year = y1;
+}
+
+void upDate::operator++()
+{
+    int m,d,y;
+    int JD = Greg2Julian(month,day,year);
+    JD+=1;
+    Julian2Greg(JD,m,d,y);
+    month = m;
+    day = d;
+    year = y;
+}
+
+void upDate::operator--()
+{
+    int m,d,y;
+    int JD = Greg2Julian(month,day,year);
+    JD-=1;
+    Julian2Greg(JD,m,d,y);
+    month = m;
+    day = d;
+    year = y;
+}
+bool upDate::operator==(upDate x)
+{
+    bool n;
+    if(month == x.month && day == x.day && year == x.year)
+    {n = true;}
+    else{n = false;}
+    return n;
+}
+bool upDate::operator<(upDate x)
+{
+    bool n;
+    int a = Greg2Julian(month,day,year);
+    int b = Greg2Julian(x.month,x.day,x.year);
+    if(a<b){n = true;}
+    else{n = false;}
+    return n;
+}
+bool upDate::operator>(upDate x)
+{
+    bool n;
+    int a = Greg2Julian(month,day,year);
+    int b = Greg2Julian(x.month,x.day,x.year);
+    if(a>b){n = true;}
+    else{n = false;}
+    return n;
+}
