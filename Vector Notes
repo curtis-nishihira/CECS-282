@@ -1,0 +1,72 @@
+int main()
+{
+	vector<int> v;
+    vector<int>::iterator it;
+    vector<int>::reverse)iterator rit;
+    for(int i = 0; i<10;i++)
+    {
+    	v.push_back(rand() % 100);
+    }
+	cout << "Ranodm ints\n";
+    for(int i:v)
+        cout << i << endl;
+    sort(v.begin,v.end);
+    cout << "Sorted ints\n";
+    for(it = v.begin(); it !=v.end(); it++)
+    	cout << *it << endl;
+    cout << "using indexes ints\n";
+    for(int i = 0; i<v.size();i++)
+		cout << v[i] << endl;
+    cout << "reverse Sorted ints\n";
+    for(rit = v.rbegin(); rit !=v.rend(); rit++)
+    	cout << *rit << endl;
+}
+
+    
+#include <vector>
+#include <iostream>
+using namespace std;
+    
+class BigInt
+{
+	private: 
+    	vector<char>
+    public:
+    BigInt(int n)
+    {
+        while (n>9)
+        {
+            int digit = n%10;
+            v.push_back(digit);
+            n = n/10;
+        }
+        v.push_back(n);
+    }
+    BigInt(string s)
+    {
+    
+    }
+    void display()
+    {
+		vector<char>::reverse_iterator rit;
+    	for(rit = v.rbegin(); it!=v.rend();rit++)
+    	{
+    		cout<< (int)*rit;	
+    	}
+    }
+};
+    
+int main()
+{
+	BigInt B(1234);
+    B.display();
+    
+    // explains chars
+    char c1 = '7';
+    char c2 = 7;
+    char c3 = c1+c2;
+    
+    cout<<"c1:"<<(int)c1<<endl;
+    cout<<"c2:"<<(int)c2<<endl;
+    cout <<"c3:"<<(int)c3<<endl;
+}
