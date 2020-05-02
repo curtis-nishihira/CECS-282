@@ -1,0 +1,110 @@
+
+#include <vector>
+#include <iostream>
+#include <map> // you will need this for the goldRabbits function
+using namespace std;
+
+class BigInt
+{
+private:
+    vector<char> v;
+public:
+    BigInt();
+    BigInt(string s);
+    BigInt(int x);
+    //BigInt(const BigInt &B);
+    void print();
+};
+
+//#include "BigInt.h"
+
+int goldRabbits(int);
+BigInt goldRabbits(BigInt);
+void pause() {cout << "Press Enter to continue..."; getchar();}
+
+int main()
+{
+    /*
+    BigInt B1("123456789123456789123456789123456789");
+    BigInt B2(B1);
+    BigInt MAX(INT_MAX);
+    cout << "B1:"<<B1<<"\nB2:"<<B2<<"\nMAX:"<<MAX<<endl;
+    pause();
+    cout << "\nB1:";
+    B1.print();
+    cout << endl;
+    pause();
+
+    // for(BigInt i=0; i<=3000; i++) // uncomment this
+    for(int i=0; i<=3000; i++) // comment this out
+    {
+    cout << "\ngoldRabbits("<< i <<") = " << goldRabbits(i);
+    }
+    pause();
+
+    cout<< "\nThis is the value of goldRabbits(3000)\n\n";
+    BigInt gR3000 = goldRabbits(BigInt(3000));
+    gR3000.print();
+
+    pause();
+    */
+    BigInt B(1234);
+    BigInt B1("1234");
+    BigInt B2(B1);
+    B.print();
+    B1.print();
+    B2.print();
+    B2 = 2000;
+    B2.print();
+    
+}
+
+// Modify this function so that it accepts BigInt as input parameter and returns a BigInt
+// and uses a map for speed
+int goldRabbits(int n)
+{
+    if (n==0 || n==1) // base case
+    return 1;
+    else
+    return goldRabbits(n-1) + goldRabbits(n-2); // general case
+}
+
+//implementation of member functions
+BigInt::BigInt(int x)
+{
+    while(x>9)
+    {
+        int temp = x % 10;
+        v.push_back(temp);
+        x = x/10;
+    }
+    v.push_back(x);
+}
+BigInt::BigInt(string s)
+{
+    int start = (int)s.length()-1;
+    for(int i = start; i>-1;i--)
+    {
+        v.push_back(s[i]-48);
+    }
+    
+}
+/*
+BigInt::BigInt(const BigInt &B)
+{
+    for(int i = 0; i<B.v.size();i++)
+    {
+        v.push_back(B.v[i]);
+    }
+}*/
+
+void BigInt::print()
+{
+    vector<char>::reverse_iterator rit;
+    for(rit = v.rbegin();rit!=v.rend();rit++)
+    {
+        cout<<(int)*rit;
+    }
+    cout<<endl;
+}
+
