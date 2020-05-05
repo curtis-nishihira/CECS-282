@@ -1,6 +1,6 @@
-
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include <map> // you will need this for the goldRabbits function
 using namespace std;
 
@@ -12,8 +12,15 @@ public:
     BigInt();
     BigInt(string s);
     BigInt(int x);
-    //BigInt(const BigInt &B);
     void print();
+    BigInt operator -(int);
+    BigInt operator +(BigInt);
+    bool operator == (int n);
+    bool operator <(const BigInt &B)const;
+    bool operator <= (int n);
+    bool operator <= (BigInt);
+    BigInt operator ++(int);
+    friend ostream &operator <<(ostream &out, const BigInt& B);
 };
 
 //#include "BigInt.h"
@@ -35,8 +42,8 @@ int main()
     cout << endl;
     pause();
 
-    // for(BigInt i=0; i<=3000; i++) // uncomment this
-    for(int i=0; i<=3000; i++) // comment this out
+    for(BigInt i=0; i<=3000; i++) // uncomment this
+    //for(int i=0; i<=3000; i++) // comment this out
     {
     cout << "\ngoldRabbits("<< i <<") = " << goldRabbits(i);
     }
@@ -48,19 +55,47 @@ int main()
 
     pause();
     */
-    BigInt B(1234);
-    BigInt B1("1234");
-    BigInt B2(B1);
-    B.print();
-    B1.print();
-    B2.print();
-    B2 = 2000;
-    B2.print();
-    
+
+    BigInt B1(2);
+    //cout<<goldRabbits(3)<<endl;
+    cout<<goldRabbits(B1)<<endl;
+}
+
+BigInt goldRabbits(BigInt n)
+{
+    static map<BigInt, BigInt*> fibMap;
+    BigInt temp(1);
+    BigInt *ptr = &temp;
+    BigInt count(0);
+    fibMap[count]=ptr;
+    count++;
+    fibMap[count]=ptr;
+    if(n==0||n==1)
+    {
+        return temp;
+    }
+    else
+    {
+        for(BigInt i = 2; i<=n;i++)
+        {
+            cout<<"Ran"<<endl;
+            BigInt *ptr;
+            ptr = new BigInt;
+            ptr->v;
+            BigInt b = *fibMap[i-1] + *fibMap[i-2];
+            fibMap[i] = ptr;
+            cout<<*fibMap[n]<<endl;
+        }
+        cout<<*fibMap[n]<<endl;
+    }
+    cout<<*fibMap[n]<<endl;
+    temp = *fibMap[n];
+    return temp;
 }
 
 // Modify this function so that it accepts BigInt as input parameter and returns a BigInt
 // and uses a map for speed
+
 int goldRabbits(int n)
 {
     if (n==0 || n==1) // base case
@@ -68,6 +103,7 @@ int goldRabbits(int n)
     else
     return goldRabbits(n-1) + goldRabbits(n-2); // general case
 }
+
 
 //implementation of member functions
 BigInt::BigInt(int x)
@@ -80,6 +116,7 @@ BigInt::BigInt(int x)
     }
     v.push_back(x);
 }
+
 BigInt::BigInt(string s)
 {
     int start = (int)s.length()-1;
@@ -89,14 +126,6 @@ BigInt::BigInt(string s)
     }
     
 }
-/*
-BigInt::BigInt(const BigInt &B)
-{
-    for(int i = 0; i<B.v.size();i++)
-    {
-        v.push_back(B.v[i]);
-    }
-}*/
 
 void BigInt::print()
 {
@@ -106,5 +135,295 @@ void BigInt::print()
         cout<<(int)*rit;
     }
     cout<<endl;
+}
+ostream & operator << (ostream &out, const BigInt &B)
+{
+    for(int i = (int)B.v.size()-1; i>=0;i--)
+    {
+        out<<to_string(B.v[i]);
+    }
+    return out;
+}
+BigInt BigInt::operator++(int)
+{
+    BigInt temp(0);
+    if(v[0]+1>9)
+    {
+        temp.v.push_back(0);
+        v[1]+=1;
+        if(0==v.size()-1)
+        {
+            temp.v.push_back(1);
+        }
+    }
+    else
+    {
+        temp.v.push_back(v[0]+1);
+    }
+    for(int i = 1;i<v.size();i++)
+    {
+        if(v[i]>9)
+        {
+            temp.v.push_back(0);
+            v[i+1]+=1;
+            if(i==v.size()-1)
+            {
+                temp.v.push_back(1);
+            }
+        }
+        else
+        {
+            temp.v.push_back(v[i]);
+        }
+    }
+    temp.v.erase(temp.v.begin());
+    v = temp.v;
+    return *this;
+}
+
+BigInt BigInt::operator-(int n)
+{
+    BigInt temp(n);
+    BigInt dif(0);
+    for(int i = 0; i<temp.v.size();i++)
+    {
+        if(v[i]<temp.v[i])
+        {
+            v[i]+=10;
+            v[i+1]-=1;
+            dif.v.push_back(v[i]-temp.v[i]);
+        }
+        else{
+            dif.v.push_back(v[i]-temp.v[i]);
+        }
+    }
+    for(int i = (int)temp.v.size(); i<v.size();i++)
+    {
+        if(v[i]<0)
+        {
+            v[i]+=10;
+            v[i+1]-=1;
+        }
+        if(i==v.size()-1&&v[v.size()-1]==0)
+        {
+            break;
+        }
+        dif.v.push_back(v[i]);
+    }
+    dif.v.erase(dif.v.begin());
+    return dif;
+}
+BigInt BigInt::operator+(BigInt B)
+{
+    BigInt temp(0);
+
+    int first = (int)v.size();
+    int second = (int)B.v.size();
+    
+    if(first > second)
+    {
+        for(int i = 0;i<second;i++)
+        {
+            int a = v[i];
+            int b = B.v[i];
+            if(a+b>9)
+            {
+                int sum = a+b-10;
+                temp.v.push_back(sum);
+                v[i+1]+=1;
+            }
+            else
+            {
+                int sum = a + b;
+                temp.v.push_back(sum);
+            }
+        }
+        for(int i = second;i<first;i++)
+        {
+            if(v[i]>9)
+            {
+                int sum = v[i]-10;
+                temp.v.push_back(sum);
+                if(i==first-1)
+                {
+                    temp.v.push_back(1);
+                }
+                else
+                {
+                    v[i+1]+=1;
+                }
+            }
+            else
+            {
+                temp.v.push_back(v[i]);
+            }
+        }
+    }
+    else if(second > first)
+    {
+        for(int i = 0;i<first;i++)
+        {
+            int a = v[i];
+            int b = B.v[i];
+            if(a+b>9)
+            {
+                int sum = a+b-10;
+                temp.v.push_back(sum);
+                B.v[i+1]+=1;
+            }
+            else
+            {
+                int sum = a + b;
+                temp.v.push_back(sum);
+            }
+        }
+        for(int i = first;i<second;i++)
+        {
+            if(B.v[i]>9)
+            {
+                int sum = B.v[i]-10;
+                temp.v.push_back(sum);
+                if(i==second-1)
+                {
+                    temp.v.push_back(1);
+                }
+                else
+                {
+                    B.v[i+1]+=1;
+                }
+            }
+            else
+            {
+                temp.v.push_back(B.v[i]);
+            }
+        }
+    }
+    else if(second == first)
+    {
+        for(int i = 0;i<second;i++)
+        {
+            int a = v[i];
+            int b = B.v[i];
+            if(a+b>9)
+            {
+                int sum = a+b-10;
+                temp.v.push_back(sum);
+                if(i==second-1)
+                {
+                    temp.v.push_back(1);
+                }
+                else
+                {
+                    B.v[i+1]+=1;
+                }
+            }
+            else if(a+b<10)
+            {
+                int sum = a + b;
+                temp.v.push_back(sum);
+            }
+        }
+    }
+    temp.v.erase(temp.v.begin());
+    return temp;
+}
+bool BigInt::operator<(const BigInt &B)const
+{
+    int first = (int)v.size();
+    int second = (int)B.v.size();
+    if(first>second)
+    {
+        return false;
+    }
+    else if(second>first)
+    {
+        return true;
+    }
+    else if(second==first)
+    {
+        for(int i = first-1; i>=0;i--)
+        {
+           if(v[i]<B.v[i])
+           {
+               return true;
+           }
+        }
+        return false;
+    }
+    return true;
+}
+bool BigInt::operator<=(int n)
+{
+    BigInt num(n);
+    int first = (int)v.size();
+    int second = (int)num.v.size();
+    if(first>second)
+    {
+        return false;
+    }
+    else if(first<second)
+    {
+        return true;
+    }
+    else if(first==second)
+    {
+        for(int i = first-1; i>=0;i--)
+        {
+           if(v[i]>num.v[i])
+           {
+               return false;
+           }
+        }
+        return true;
+    }
+    return true;
+}
+bool BigInt::operator<=(BigInt B)
+{
+    int first = (int)v.size();
+    int second = (int)B.v.size();
+    if(first>second)
+    {
+        return false;
+    }
+    else if(first<second)
+    {
+        return true;
+    }
+    else if(first==second)
+    {
+        for(int i = first-1; i>=0;i--)
+        {
+            if(v[i]>B.v[i])
+           {
+               return false;
+           }
+        }
+        return true;
+    }
+    return true;
+}
+// not sure if need
+bool BigInt::operator==(int n)
+{
+    BigInt num(n);
+    int first = (int)v.size();
+    int second = (int)num.v.size();
+    if(first!=second)
+    {
+        return false;
+    }
+    else if(first==second)
+    {
+        for(int i = first-1; i>=0;i--)
+        {
+           if(v[i]!=num.v[i])
+           {
+               return false;
+           }
+        }
+        return true;
+    }
+    return true;
 }
 
